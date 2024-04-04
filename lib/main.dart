@@ -84,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           selectedIdx = index;
                           currentCell.valuesToDisplay = [0];
                           currentCell.isCorrect = true;
+                          currentCell.isAnnotateMode = false;
                         })
                       : null;
                 },
@@ -92,10 +93,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     alignment: Alignment.center,
                     margin: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
-                        color: getColorCell(index, selectedIdx,
-                            !currentCell.isCorrect, context),
+                        color: getColorCell(
+                            index,
+                            selectedIdx,
+                            !currentCell.isCorrect,
+                            currentCell.isAnnotateMode,
+                            context),
                         border: Border.all(color: cellBorderColor)),
-                    child: (currentCell.valuesToDisplay.length == 1)
+                    // child: (currentCell.valuesToDisplay.length == 1)
+                    child: (!currentCell.isAnnotateMode)
                         ? Text(
                             (currentCell.valuesToDisplay.first == 0)
                                 ? ''
@@ -156,8 +162,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     currentCell.valuesToDisplay.remove(0);
                     if ((!currentCell.valuesToDisplay.contains(index + 1))) {
                       currentCell.valuesToDisplay.add(index + 1);
+                    } else {
+                      currentCell.valuesToDisplay.remove(index + 1);
                     }
                     currentCell.checkIsCorrect();
+                    sudoku.check();
                   });
                 },
                 child: InputDigit(
@@ -170,48 +179,77 @@ class _MyHomePageState extends State<MyHomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(
-                icon: const Icon(Icons.replay),
-                onPressed: () {
-                  setState(() {
-                    sudoku = Sudoku(selectedDifficulty: selectedDifficulty);
-                    initializeSelectedIdx();
-                  });
-                },
+              Column(
+                children: [
+                  Text(
+                    'Nouvelle partie',
+                    style: legendStyle,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.replay),
+                    onPressed: () {
+                      setState(() {
+                        sudoku = Sudoku(selectedDifficulty: selectedDifficulty);
+                        initializeSelectedIdx();
+                      });
+                    },
+                  ),
+                ],
               ),
-              IconButton(
-                icon: const Icon(Icons.edit_note),
-                onPressed: () {},
+              Column(
+                children: [
+                  Text('Annoter', style: legendStyle),
+                  IconButton(
+                    icon: const Icon(Icons.edit_note),
+                    onPressed: () {
+                      setState(() {
+                        sudoku.cells[selectedIdx].setAnnotateMode();
+                        sudoku.cells[selectedIdx].valuesToDisplay = [];
+                      });
+                    },
+                  ),
+                ],
               ),
-              DropdownButton(
-                value: selectedDifficulty,
-                items: difficulty.keys
-                    .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedDifficulty = value!;
-                    // print(selectedDifficulty);
-                    sudoku = Sudoku(selectedDifficulty: selectedDifficulty);
-                    initializeSelectedIdx();
-                  });
-                },
+              Column(
+                children: [
+                  Text(
+                    'Difficulté',
+                    style: legendStyle,
+                  ),
+                  DropdownButton(
+                    isExpanded: false,
+                    dropdownColor: getInputNumberColor(context),
+                    borderRadius: BorderRadius.circular(20),
+                    value: selectedDifficulty,
+                    items: difficulty.keys
+                        .map(
+                          (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDifficulty = value!;
+                        // print(selectedDifficulty);
+                        sudoku = Sudoku(selectedDifficulty: selectedDifficulty);
+                        initializeSelectedIdx();
+                      });
+                    },
+                  ),
+                ],
               ),
+              sudoku.check() ? const Text('Bravo') : Container(),
               // TextButton(
               //     onPressed: () {
               //       // print(sudoku.check());
               //       setState(() {
-              //         isValid = sudoku.check()
-              //             ? 'grille correcte'
-              //             : 'grille incorrecte';
+              //         isValid =
+              //             sudoku.check() ? 'correcte' : 'grille incorrecte';
               //       });
               //     },
-              //     child: Text('vérification: $isValid')),
+              //     child: Text('$isValid')),
             ],
           ),
         ]),

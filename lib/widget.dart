@@ -10,7 +10,7 @@ class InputDigit extends StatelessWidget {
     required this.color,
   });
   final String digitAsString;
-  final color;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +30,8 @@ class InputDigit extends StatelessWidget {
   }
 }
 
-Color getColorCell(
-    int index, int selectedIndex, bool isError, BuildContext context) {
+Color getColorCell(int index, int selectedIndex, bool isError, bool isMulti,
+    BuildContext context) {
   Color aux = Colors.white;
 
   if (index == selectedIndex) {
@@ -41,7 +41,7 @@ Color getColorCell(
         ? getCellOuterBgColor(context)
         : getCellInnerBgColor(context);
   }
-  if (isError) aux = cellErrorColor;
+  if ((!isMulti) && (isError)) aux = cellErrorColor;
 
   return aux;
 }

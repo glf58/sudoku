@@ -15,6 +15,7 @@ Color getCellOuterBgColor(BuildContext context) {
 }
 
 Color getCellInnerBgColor(BuildContext context) {
+  // return Colors.white;
   return Theme.of(context).colorScheme.primaryContainer;
 }
 
@@ -26,8 +27,9 @@ Color getInputNumberColor(BuildContext context) {
   return Theme.of(context).colorScheme.surfaceVariant;
 }
 
-TextStyle cellMultiInputTextSize = const TextStyle(fontSize: 10);
-
+TextStyle cellMultiInputTextSize =
+    const TextStyle(fontSize: 10, fontStyle: FontStyle.italic);
+TextStyle legendStyle = const TextStyle(fontSize: 12);
 TextStyle emptyCellTextStyle =
     const TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
 TextStyle stickyCellTextStyle =
@@ -35,8 +37,8 @@ TextStyle stickyCellTextStyle =
 
 const Map<String, int> difficulty = {
   "débutant": 20,
-  "intermédiaire": 35,
-  "confirmé": 50,
-  "expert": 60,
-  "diabolique": 80,
+  "intermédiaire": 30,
+  "confirmé": 40,
+  "expert": 50,
+  "diabolique": 60,
 };
